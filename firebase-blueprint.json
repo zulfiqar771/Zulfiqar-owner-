@@ -1,0 +1,148 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Authenticated user profile, theme preference, and owner-controlled status.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the user."
+        },
+        "displayName": {
+          "type": "string",
+          "description": "User display name from Google Sign-In."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Optional user email address."
+        },
+        "darkTheme": {
+          "type": "boolean",
+          "description": "Whether Midnight Dark theme is enabled."
+        },
+        "suspended": {
+          "type": "boolean",
+          "description": "Whether the owner has suspended this user's access."
+        },
+        "ownerNote": {
+          "type": "string",
+          "description": "Optional administrative note written exclusively by the owner."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp written via FieldValue.serverTimestamp()."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp updated via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["userId", "displayName", "darkTheme", "suspended", "createdAt", "updatedAt"]
+    },
+    "ChatMessage": {
+      "title": "ChatMessage",
+      "description": "Saved conversation message belonging to a single user.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Firebase Auth UID of the owning user."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["USER", "ASSISTANT"],
+          "description": "Sender role."
+        },
+        "text": {
+          "type": "string",
+          "description": "Message text content."
+        },
+        "generatedImage": {
+          "type": "boolean",
+          "description": "True if this entry represents an AI-generated image caption."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp written via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": ["userId", "role", "text", "generatedImage", "createdAt"]
+    },
+    "OwnerAppConfig": {
+      "title": "OwnerAppConfig",
+      "description": "Live app-wide settings and AI directives controlled exclusively by the app owner.",
+      "type": "object",
+      "properties": {
+        "ownerEmail": {
+          "type": "string",
+          "format": "email",
+          "description": "Fixed owner email (fqore2012@gmail.com)."
+        },
+        "announcement": {
+          "type": "string",
+          "description": "Optional broadcast message shown to all signed-in users."
+        },
+        "ownerDirective": {
+          "type": "string",
+          "description": "Custom AI assistant command/directive applied across the app."
+        },
+        "dailyImageLimit": {
+          "type": "integer",
+          "description": "Daily AI image generation quota per user (1-50)."
+        },
+        "maintenanceMode": {
+          "type": "boolean",
+          "description": "When true, non-owner users see a maintenance screen."
+        },
+        "maintenanceMessage": {
+          "type": "string",
+          "description": "Message displayed during maintenance mode."
+        },
+        "updatedBy": {
+          "type": "string",
+          "description": "Owner email or UID who last modified settings."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp updated via FieldValue.serverTimestamp()."
+        }
+      },
+      "required": [
+        "ownerEmail",
+        "announcement",
+        "ownerDirective",
+        "dailyImageLimit",
+        "maintenanceMode",
+        "maintenanceMessage",
+        "updatedBy",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "User profiles readable/manageable by the owner or owning user."
+    },
+    "/users/{userId}/messages/{messageId}": {
+      "schema": {
+        "$ref": "#/entities/ChatMessage"
+      },
+      "description": "Conversation message history scoped to user and observable/manageable by the owner."
+    },
+    "/appConfig/{configId}": {
+      "schema": {
+        "$ref": "#/entities/OwnerAppConfig"
+      },
+      "description": "Global application settings doc (settings) writable only by the owner."
+    }
+  }
+}

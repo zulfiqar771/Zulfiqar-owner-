@@ -1,0 +1,6 @@
+{
+  "name": "سؤال وجواب",
+  "description": "تطبيق ذكاء اصطناعي نصي باللغة العربية (RTL) للأسئلة والأجوبة الدقيقة والمباشرة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

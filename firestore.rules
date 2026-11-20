@@ -1,0 +1,158 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Bootstrapped App Owner: fqore2012@gmail.com with verified email claim (prevents email spoofing)
+    function isOwnerAdmin() {
+      return isSignedIn() &&
+             'email' in request.auth.token &&
+             'email_verified' in request.auth.token &&
+             request.auth.token.email is string &&
+             request.auth.token.email.lower() == 'fqore2012@gmail.com' &&
+             request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string &&
+             id.size() >= 1 &&
+             id.size() <= 128 &&
+             id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidUserProfile(data, userId) {
+      return data.userId is string &&
+             data.userId == userId &&
+             data.displayName is string &&
+             data.displayName.size() >= 1 &&
+             data.displayName.size() <= 100 &&
+             (!('email' in data) || (data.email is string && data.email.size() <= 254)) &&
+             data.darkTheme is bool &&
+             (!('suspended' in data) || data.suspended is bool) &&
+             (!('ownerNote' in data) || (data.ownerNote is string && data.ownerNote.size() <= 500));
+    }
+
+    function isValidChatMessage(data, userId) {
+      return data.userId is string &&
+             data.userId == userId &&
+             data.userId == request.auth.uid &&
+             data.role is string &&
+             (data.role == 'USER' || data.role == 'ASSISTANT') &&
+             data.text is string &&
+             data.text.size() >= 1 &&
+             data.text.size() <= 12000 &&
+             data.generatedImage is bool;
+    }
+
+    function isValidAppConfig(data) {
+      return data.ownerEmail is string &&
+             data.ownerEmail == 'fqore2012@gmail.com' &&
+             data.announcement is string &&
+             data.announcement.size() <= 400 &&
+             data.ownerDirective is string &&
+             data.ownerDirective.size() <= 1200 &&
+             data.dailyImageLimit is int &&
+             data.dailyImageLimit >= 1 &&
+             data.dailyImageLimit <= 50 &&
+             data.maintenanceMode is bool &&
+             data.maintenanceMessage is string &&
+             data.maintenanceMessage.size() <= 300 &&
+             data.updatedBy is string &&
+             data.updatedBy.size() >= 1 &&
+             data.updatedBy.size() <= 254;
+    }
+
+    match /users/{userId} {
+      allow get: if (isOwner(userId) || isOwnerAdmin()) && isValidId(userId);
+      allow list: if isOwnerAdmin();
+
+      allow create: if isOwner(userId) &&
+                       isValidId(userId) &&
+                       incoming().keys().hasAll(['userId', 'displayName', 'darkTheme', 'suspended', 'createdAt', 'updatedAt']) &&
+                       incoming().keys().hasOnly(['userId', 'displayName', 'email', 'darkTheme', 'suspended', 'createdAt', 'updatedAt']) &&
+                       incoming().userId == request.auth.uid &&
+                       incoming().suspended == false &&
+                       isValidUserProfile(incoming(), userId) &&
+                       incoming().createdAt is timestamp &&
+                       incoming().createdAt <= request.time &&
+                       incoming().updatedAt is timestamp &&
+                       incoming().updatedAt <= request.time;
+
+      allow update: if isSignedIn() &&
+                       isValidId(userId) &&
+                       isValidUserProfile(incoming(), userId) &&
+                       incoming().userId == existing().userId &&
+                       incoming().createdAt == existing().createdAt &&
+                       incoming().updatedAt is timestamp &&
+                       incoming().updatedAt <= request.time && (
+                         (isOwnerAdmin() &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['suspended', 'ownerNote', 'darkTheme', 'displayName', 'updatedAt'])) ||
+                         (isOwner(userId) &&
+                           incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'email', 'darkTheme', 'updatedAt']))
+                       );
+
+      allow delete: if (isOwner(userId) || isOwnerAdmin()) && isValidId(userId);
+
+      match /messages/{messageId} {
+        allow get: if (isOwner(userId) || isOwnerAdmin()) && isValidId(userId) && isValidId(messageId);
+        allow list: if (isOwner(userId) || isOwnerAdmin()) && isValidId(userId);
+
+        allow create: if isOwner(userId) &&
+                         isValidId(userId) &&
+                         isValidId(messageId) &&
+                         incoming().keys().hasAll(['userId', 'role', 'text', 'generatedImage', 'createdAt']) &&
+                         incoming().keys().hasOnly(['userId', 'role', 'text', 'generatedImage', 'createdAt']) &&
+                         isValidChatMessage(incoming(), userId) &&
+                         incoming().createdAt is timestamp &&
+                         incoming().createdAt <= request.time;
+
+        allow update: if false;
+        allow delete: if (isOwner(userId) || isOwnerAdmin()) && isValidId(userId) && isValidId(messageId);
+      }
+    }
+
+    match /appConfig/{configId} {
+      allow get: if isSignedIn() && configId == 'settings';
+      allow list: if isOwnerAdmin();
+
+      allow create, update: if isOwnerAdmin() &&
+                               configId == 'settings' &&
+                               incoming().keys().hasAll([
+                                 'ownerEmail', 'announcement', 'ownerDirective',
+                                 'dailyImageLimit', 'maintenanceMode', 'maintenanceMessage',
+                                 'updatedBy', 'updatedAt'
+                               ]) &&
+                               incoming().keys().hasOnly([
+                                 'ownerEmail', 'announcement', 'ownerDirective',
+                                 'dailyImageLimit', 'maintenanceMode', 'maintenanceMessage',
+                                 'updatedBy', 'updatedAt'
+                               ]) &&
+                               isValidAppConfig(incoming()) &&
+                               incoming().updatedAt is timestamp &&
+                               incoming().updatedAt <= request.time;
+
+      allow delete: if isOwnerAdmin() && configId == 'settings';
+    }
+  }
+}

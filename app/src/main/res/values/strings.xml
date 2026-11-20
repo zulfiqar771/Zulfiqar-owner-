@@ -1,0 +1,79 @@
+<resources>
+    <string name="app_name">سؤال وجواب</string>
+    <string name="app_subtitle">مساعد ذكي متكامل • عربي</string>
+    <string name="new_chat">محادثة جديدة</string>
+    <string name="new_chat_desc">بدء محادثة جديدة</string>
+    <string name="theme_toggle_desc">تبديل الوضع الليلي والنهاري</string>
+
+    <string name="mode_auto">المساعد الشامل</string>
+    <string name="mode_auto_desc">أسئلة، صور، بايثون، روبلوكس، ورسم</string>
+    <string name="mode_image_gen">صناعة صورة</string>
+
+    <string name="welcome_title">الكلمة لك، أهلاً بك</string>
+
+    <string name="assistant_label">المساعد</string>
+    <string name="user_label">أنت</string>
+    <string name="thinking_label">أفكر في إجابتك...</string>
+    <string name="generating_image_label">جارٍ رسم الصورة بالذكاء الاصطناعي...</string>
+    <string name="image_generated_caption">تم إنشاء الصورة بنجاح ✨</string>
+    <string name="attached_image_label">صورة مرفقة</string>
+    <string name="default_vision_question">اشرح محتوى هذه الصورة بالتفصيل وأجب عن أي نصوص أو عناصر ظاهرة فيها.</string>
+
+    <string name="copy_answer">نسخ النص</string>
+    <string name="copy_code">نسخ الكود</string>
+    <string name="copied_snackbar">تم النسخ إلى الحافظة</string>
+    <string name="save_image">حفظ الصورة</string>
+    <string name="image_saved_snackbar">تم حفظ الصورة في المعرض بنجاح</string>
+    <string name="image_save_failed_snackbar">تعذر حفظ الصورة على هذا الجهاز</string>
+    <string name="retry_button">إعادة المحاولة</string>
+
+    <string name="input_placeholder_chat">اسألني أي شيء...</string>
+    <string name="input_placeholder_image">صف الصورة التي تريد رسمها...</string>
+
+    <string name="attach_image_desc">إرفاق صورة للتحليل</string>
+    <string name="remove_image_desc">إزالة الصورة المرفقة</string>
+    <string name="send_button_desc">إرسال</string>
+    <string name="arabic_keyboard_toggle_open">فتح لوحة المفاتيح العربية</string>
+    <string name="arabic_keyboard_toggle_close">إغلاق لوحة المفاتيح العربية</string>
+    <string name="arabic_keyboard_badge">ع</string>
+    <string name="keyboard_space">مسافة</string>
+    <string name="keyboard_send">إرسال</string>
+    <string name="keyboard_backspace_desc">حذف حرف</string>
+    <string name="keyboard_shift_desc">همزات وتشكيل</string>
+
+    <string name="auth_welcome_title">أهلاً بك في سؤال وجواب</string>
+    <string name="auth_welcome_subtitle">سجّل دخولك بحساب Google لحفظ محادثاتك ومزامنتها بأمان على جميع أجهزتك ✨</string>
+    <string name="google_sign_in_button">تسجيل الدخول عبر Google</string>
+    <string name="signing_in_label">جارٍ تسجيل الدخول...</string>
+    <string name="sign_out_button">تسجيل الخروج</string>
+    <string name="account_menu_desc">حساب المستخدم</string>
+    <string name="welcome_personal_prefix">الكلمة لك، %1$s</string>
+
+    <string name="owner_badge_label">المالك</string>
+    <string name="owner_panel_title">لوحة تحكم المالك</string>
+    <string name="owner_panel_desc">إدارة المستخدمين وأوامر التطبيق</string>
+    <string name="owner_tab_users">المستخدمون</string>
+    <string name="owner_tab_commands">أوامر المالك</string>
+    <string name="owner_users_count">إجمالي المستخدمين: %1$d</string>
+    <string name="owner_view_chats">عرض المحادثات</string>
+    <string name="owner_suspend_user">إيقاف الحساب</string>
+    <string name="owner_activate_user">تفعيل الحساب</string>
+    <string name="owner_clear_user_chats">مسح جميع محادثات المستخدم</string>
+    <string name="owner_status_active">نشط</string>
+    <string name="owner_status_suspended">موقوف</string>
+    <string name="owner_no_users">لا يوجد مستخدمون مسجلون حتى الآن.</string>
+    <string name="owner_no_user_messages">لا توجد رسائل محفوظة لهذا المستخدم.</string>
+    <string name="owner_directive_label">أمر وتوجيه مباشر للذكاء الاصطناعي (يطبق على الجميع)</string>
+    <string name="owner_directive_hint">مثال: رحب بكل مستخدم بحرارة، أو ركز على شروحات البرمجة...</string>
+    <string name="owner_announcement_label">إعلان أو تنبيه عام للمستخدمين</string>
+    <string name="owner_announcement_hint">اتركه فارغاً لإخفاء شريط التنبيه...</string>
+    <string name="owner_image_limit_label">الحد اليومي لصناعة الصور لكل مستخدم: %1$d</string>
+    <string name="owner_maintenance_label">وضع الصيانة (إيقاف التطبيق للمستخدمين)</string>
+    <string name="owner_maintenance_msg_label">رسالة وضع الصيانة</string>
+    <string name="owner_save_commands">حفظ وتطبيق الأوامر</string>
+    <string name="owner_commands_saved">تم حفظ وتطبيق أوامر المالك بنجاح 👑</string>
+    <string name="account_suspended_title">تم إيقاف الحساب</string>
+    <string name="account_suspended_default">تم تعليق استخدامك للتطبيق من قِبل المالك. يمكنك التواصل مع المالك لمراجعة حسابك.</string>
+    <string name="maintenance_mode_title">التطبيق في وضع التحديث والصيانة</string>
+    <string name="maintenance_mode_default">نعمل حالياً على تحسين التطبيق بتوجيه من المالك. سنعود للعمل قريباً ✨</string>
+</resources>
